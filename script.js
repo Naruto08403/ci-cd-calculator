@@ -16,7 +16,7 @@ if (typeof document !== "undefined") {
     }
 }
 
-// Export functions for unit testing in Node.js
+// Export functions for unit testing in Node.js 
 if (typeof module !== "undefined" && module.exports) { 
     module.exports = { add};
 }
