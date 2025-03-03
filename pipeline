@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-username/calculator.git'
+            }
+        }
+
+        stage('Setup Node.js') {
+            steps {
+                bat 'node -v'  // Check Node.js version
+                bat 'npm install'
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                script {
+                    def testResult = bat(script: 'npm test', returnStatus: true)
+                    if (testResult != 0) {
+                        error("Unit tests failed!")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to GitHub Pages') {
+            steps {
+                withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'TOKEN')]) {
+                    bat '''
+                    git config --global user.email "your-email@example.com"
+                    git config --global user.name "your-username"
+                    git checkout --orphan gh-pages
+                    git rm -rf .
+                    echo "GitHub Pages Deployed from Jenkins" > index.html
+                    git add .
+                    git commit -m "Automated Deployment from Jenkins"
+                    git push --force https://%TOKEN%@github.com/your-username/calculator.git gh-pages
+                    '''
+                }
+            }
+        }
+    }
+}
