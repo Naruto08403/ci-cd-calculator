@@ -7,7 +7,7 @@
       "deploy": "master -d ."
     },
     "devDependencies": {
-      "jest": "^29.0.0"
+      "jest": "^29.0.0" 
     }
   }
   
